@@ -1,0 +1,115 @@
+<!-- This is a static file -->
+<!-- served from your routes in server.js -->
+
+<!-- You might want to try something fancier: -->
+<!-- html/nunjucks docs: https://mozilla.github.io/nunjucks/ -->
+<!-- pug: https://pugjs.org/ -->
+<!-- haml: http://haml.info/ -->
+<!-- hbs(handlebars): http://handlebarsjs.com/ -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Welcome to Glitch!</title>
+    <meta name="description" content="A cool thing made with Glitch">
+    <link id="favicon" rel="icon" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <header>
+      <h1>
+        header
+      </h1>
+    </header>
+
+    <main>
+      <p>main</p>
+
+      <div class="container">	
+ 
+      <form action="api/polls/" method="post">
+        <label for="title">Title:</label>
+        <input id="title" type="text" name="title" placeholder="Title" required>
+        <label for="options">Choices:</label>
+        <textarea id="options" rows="5" name="options" placeholder="Separate your options by new lines (return/enter)."></textarea>
+        <input type="submit" value="Submit">
+      </form>
+      
+      <div id="results">
+      </div>
+      
+		</div>
+      
+    </main>
+
+    <footer>
+      <a href="https://glitch.com">
+        Remix this in Glitch
+      </a>
+    </footer>
+
+    <!-- Your web-app is https, so your scripts need to be too -->
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script crossorigin src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-2.2.1.min.js"
+            integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
+            crossorigin="anonymous"></script>
+    <script src="/client.js"></script>
+    
+    <!-- Create React Component -->
+    
+    <script type="text/babel">
+      var Polls = React.createClass({
+        getInitialState: function(){
+          return({
+            polls: []
+          });
+        },
+        render: function(){
+          var polls = this.state.polls;
+          polls = polls.map(function(poll, index){
+            return (
+              <li key={index}>
+                <span className={poll.obj.available}></span>
+                <span className="title">{poll.obj.name}</span>
+                <span className="options">{poll.obj.options}</span>
+                <span className="votes">{poll.obj.votes}</span>
+              </li>
+            )
+          });
+          return(
+            <div id="poll-container">
+              <form id="search" onSubmit={this.handleSubmit}>
+                <label>Enter your title:</label>
+                <input type="text" ref="title" placeholder="title" required />
+                <input type="sumit" value="Find Polls" />
+              </form>
+              <ul>{polls}</ul>
+            </div>
+          );
+        },
+        handleSubmit: function(e){
+          e.preventDefault();
+          var title = this.refs.title.value;
+          
+          fetch('/api/polls?title=' + title).then(function(data){
+            return data.json();
+          }).then(json => {
+            this.setState({
+              polls: json
+            });
+          });
+        }
+      });
+      
+      ReactDOM.render(<Polls />, document.getElementById('results'));
+      
+    </script>
+
+  </body>
+</html>
