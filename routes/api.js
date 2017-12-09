@@ -1,26 +1,18 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var urlEncodedParser = bodyParser.urlencoded({ extended: false });
-const router = express.Router();
-const Poll = require('../models/polls');
+var router = express.Router();
+var Poll = require('../models/polls');
 
 // Get a poll
 router.get("/polls", function (req, res, next) {
   
-  Poll.find({}).then(function(polls){
-    res.send(polls);
+  Poll.find({}).then(eachOne => {
+    res.json(eachOne);
   })
-  
-  
-  
-  
-  /*Poll.find({}, function (err, poll) {
-        if (err) return err;
-        response.send(poll);
-      })
-  */
-});
 
+})
+  
 // Create a poll
 router.post("/polls", urlEncodedParser, function (req, res, next) {
   
@@ -48,5 +40,7 @@ router.post("/polls", urlEncodedParser, function (req, res, next) {
 router.delete("/polls", function(req,res,next){
   res.send({type: 'DELETE'});
 })
+
+
 
 module.exports = router;

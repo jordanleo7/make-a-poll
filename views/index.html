@@ -41,7 +41,7 @@
         <input type="submit" value="Submit">
       </form>
       
-      <div id="results">
+      <div id="root">
       </div>
       
 		</div>
@@ -65,51 +65,54 @@
     <script src="/client.js"></script>
     
     <!-- Create React Component -->
+    <!-- use a constructor and super method to pass props down -->
     
     <script type="text/babel">
-        class Polls extends React.Component{
-        constructor(){
-        super();
-              this.state={polls: []};
-              }
-        render(){
-          var polls = this.state.polls;
-          polls = polls.map(function(poll, index){
+      
+      class Polls extends React.Component {
+
+        constructor(props) {
+          super(props);
+          this.state = {
+            list: [],
+          };
+        }
+        
+        componentDidMount() {
+          var myInit = {method:"GET"};
+          fetch('/api/polls', myInit)
+            .then((response) => {
+              return response.json();
+            }).then((data) => {
+              this.state.list = data;
+              this.setState(this.state);
+            });
+        }
+        
+        render() {
+        
+          var testJSON = JSON.stringify(this.state.list);
+          var test = this.state.list;
+          
+          var test2 = test.map(function(poll, index){
             return (
               <li key={index}>
-                <span className={poll.obj.available}></span>
-                <span className="title">{poll.obj.name}</span>
-                <span className="options">{poll.obj.options}</span>
-                <span className="votes">{poll.obj.votes}</span>
+                <span className="title">{poll.title}</span>
               </li>
             )
           });
-          return(
-            <div id="poll-container">
-              <form id="search" onSubmit={this.handleSubmit}>
-                <label>Search by title:</label>
-                <input type="text" ref="title" placeholder="title" required />
-                <input type="submit" value="Find Polls" />
-              </form>
-              <ul>{polls}</ul>
-            </div>
-          );
-        }
-        handleSubmit(e){
-          e.preventDefault();
-          var title = this.refs.title.value;
           
-          fetch('/api/polls?title=' + title).then(function(data){
-            return data.json();
-          }).then(json => {
-            this.setState({
-              polls: json
-            });
-          });
+          return(
+            <div className="pollContainer">
+            <h6>Polls:</h6>
+            <ul>{test2}</ul>
+            </div>
+          )
         }
-      };
       
-      ReactDOM.render(<Polls />, document.getElementById('results'));
+      }
+      
+      ReactDOM.render(<Polls />, document.getElementById('root'));
       
     </script>
 
