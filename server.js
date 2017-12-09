@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 var app = express();
 // Import Mongoose
 var mongoose = require('mongoose');
+// Use native promises
+mongoose.Promise = global.Promise;
 // Set up mongoose connection
 mongoose.connect(process.env.MONGO_URI, {
   useMongoClient: true
@@ -33,10 +35,16 @@ app.use(function(err, req, res, next){
   
 });
 
+
+app.get("/newpoll", function (request, response) {
+  response.sendFile(__dirname + '/views/newpoll.html');
+})
 // http://expressjs.com/en/starter/basic-routing.html
 app.get("/", function (request, response) {
   response.sendFile(__dirname + '/views/index.html');
 });
+
+
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
