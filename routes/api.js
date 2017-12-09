@@ -28,7 +28,7 @@ router.post("/polls", urlEncodedParser, function (req, res, next) {
   
   // Create poll
   Poll.create(createPoll).then(function(poll){
-    res.send(poll);
+    res.json(poll);
   }).catch(next);
   
 });
