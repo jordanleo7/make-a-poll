@@ -29,8 +29,8 @@
         </button>
         <div class="collapse navbar-collapse" id="navbar">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+            <li class="nav-item">
+              <a class="nav-link" href="/">Home</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/newpoll">New</a>
@@ -79,13 +79,16 @@
         constructor(props) {
           super(props);
           this.state = {
-            list: [],
+            list : [],
           };
         }
         
         componentDidMount() {
+          var str = window.location.href;
+          var res = str.split("?");
+          var getPath = '/api/polll/' + res[1];
           var init = {method:"GET"};
-          fetch('/api/polls', init)
+          fetch(getPath, init)
             .then((response) => {
               return response.json();
             }).then((data) => {
@@ -95,24 +98,23 @@
         }
         
         render() {
-        
-          var test = this.state.list;
-          
-          var test2 = test.map(function(poll, index){
 
-            return (
-              <a key={index} className="list-group-item list-group-item-action" href={"/poll?" + poll._id} >
-                <span className="title">{poll.title}</span>
-              </a>
-            )
+          var test = this.state.list.map(function(prop, index) {
+            var splitOptions = prop.options.split(",");
+            var splitVotes = prop.votes.split(",");
+            console.log('Options: ' + splitOptions + ' Votes: ' + splitVotes);
+            
+            
+            
+            <li key={prop._id}>
+              hello
+            </li>
           });
-          
+            
+
           return(
             <div>
-              <h3>All Polls</h3>
-              <div className="list-group pt-2">
-                {test2}
-              </div>
+              <p>{test}</p>
             </div>
           )
         }
@@ -125,3 +127,4 @@
 
   </body>
 </html>
+

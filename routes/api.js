@@ -4,7 +4,26 @@ var urlEncodedParser = bodyParser.urlencoded({ extended: false });
 var router = express.Router();
 var Poll = require('../models/polls');
 
-// Get a poll
+// Get individual poll
+router.get("/userpolls", function (req, res, next) {
+  
+  Poll.find({ 'creator': 'placeholder' }).then(data => {
+    res.json(data);
+  })
+
+})
+
+router.get("/polll/*", function (req, res, next) {
+  
+  var poll_id = req.params[0];
+
+  Poll.find({ '_id': poll_id }).then(data => {
+    res.json(data);
+  })
+
+})
+
+// Get all polls
 router.get("/polls", function (req, res, next) {
   
   Poll.find({}).then(eachOne => {
@@ -24,11 +43,12 @@ router.post("/polls", urlEncodedParser, function (req, res, next) {
   for (i = 0; i < createOptions.length; i++) { 
     createVotes.push(0);
   }
-  var createPoll = new Poll({ title: req.body.title, options: createOptions, votes: createVotes});
+  var createdBy = 'placeholder2';
+  var createPoll = new Poll({ title: req.body.title, options: createOptions, votes: createVotes, voted: [], creator: createdBy });
   
   // Create poll
   Poll.create(createPoll).then(function(poll){
-    res.json(poll);
+    res.redirect('/');
   }).catch(next);
   
 });
