@@ -39,6 +39,11 @@ app.use(function(err, req, res, next){
 app.get("/newpoll", function (request, response) {
   response.sendFile(__dirname + '/views/newpoll.html');
 })
+
+app.get("/poll", function (request, response) {
+  response.sendFile(__dirname + '/views/poll.html');
+})
+
 // http://expressjs.com/en/starter/basic-routing.html
 app.get("/", function (request, response) {
   response.sendFile(__dirname + '/views/index.html');
