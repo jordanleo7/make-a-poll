@@ -23,7 +23,7 @@
 
     <header>
       <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">Make a Poll</a>
+        <a class="navbar-brand" href="/">Make a Poll</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
         </button>
@@ -80,8 +80,11 @@
           super(props);
           this.state = {
             list : [],
+            idk: "idk man"
           };
         }
+        
+ 
         
         componentDidMount() {
           var str = window.location.href;
@@ -94,29 +97,67 @@
             }).then((data) => {
               this.state.list = data;
               this.setState(this.state);
-            });
+          });
         }
-        
+
+
+
         render() {
 
-          var test = this.state.list.map(function(prop, index) {
-            var splitOptions = prop.options.split(",");
-            var splitVotes = prop.votes.split(",");
-            console.log('Options: ' + splitOptions + ' Votes: ' + splitVotes);
-            
-            
-            
-            <li key={prop._id}>
-              hello
-            </li>
-          });
-            
+          var str1 = window.location.href;
+          var res1 = str1.split("?");
+          var getPath1 = '/api/poll/' + res1[1];
 
+          var pollOptions = this.state.list.map(function(prop, index) {
+    
+            var polloptions = prop.options.split(",");
+            var pollvotes = prop.votes.split(",");
+            
+            var listIt = polloptions.map(function(option, index) {
+              
+              var voteCount = pollvotes[index];
+              
+              var voteLink = getPath1;
+              
+              return (
+              
+                
+                 <form key={index} action={voteLink} method="put">
+                 
+                 {option}, votes: {voteCount} 
+                 
+                   <div className="form-group row">
+                      <label htmlFor="title" className="col-sm-2 col-form-label">Title</label>
+                      <div className="col-sm-10">
+                          <input className="form-control" id="title" type="text" name="title" placeholder="Title" required />
+                      </div>
+                    </div>
+                 
+                 <input type="submit" value="vote" className="btn btn-primary" />
+                 
+                 </form>
+              
+                
+              
+              )
+              
+            })
+            
+            return listIt;
+            
+          });
+          
+          
+          
+          
           return(
             <div>
-              <p>{test}</p>
+              <ul> {pollOptions} </ul>
             </div>
           )
+          
+          
+          
         }
       
       }
