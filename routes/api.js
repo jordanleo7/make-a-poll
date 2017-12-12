@@ -54,7 +54,17 @@ router.post("/polls", urlEncodedParser, function (req, res, next) {
 });
 
 // Update a poll
+router.put("/polls/:id", urlEncodedParser, function(req,res,next){
+  
 
+  Poll.findByIdAndUpdate({_id: req.params.id}, req.body).then(function() {
+    Poll.findOne({_id: req.params.id}).then(function(poll){
+      res.send(poll);
+    })
+    
+  })
+  
+})
 
 // Delete a poll
 router.delete("/polls", function(req,res,next){
