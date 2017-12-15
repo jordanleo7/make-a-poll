@@ -1,14 +1,20 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
 // Create Schema
-var pollSchema = new Schema({
+const OptionSchema = new Schema({
+  name: String,
+  votes: Number
+})
+
+const PollSchema = new Schema({
   title: String,
-  options: String,
-  votes: String,
+  options: [OptionSchema],
   voted: String,
   creator: String
 })
+
 // Create model
-var Poll = mongoose.model('Poll', pollSchema);
+const Poll = mongoose.model('poll', PollSchema);
 
 module.exports = Poll;

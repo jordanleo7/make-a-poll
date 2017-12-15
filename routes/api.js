@@ -35,35 +35,44 @@ router.get("/polls", function (req, res, next) {
 // Create a poll
 router.post("/polls", urlEncodedParser, function (req, res, next) {
   
+  var createTitle = req.body.title;
   // Split textarea by enter/return
   var createOptions = req.body.options.split(/\r?\n/);
-  // Create array of votes ie. 0,0,0,0
-  var i = 0;
-  var createVotes = [];
-  for (i = 0; i < createOptions.length; i++) { 
-    createVotes.push(0);
-  }
-  var createdBy = 'placeholder2';
-  var createPoll = new Poll({ title: req.body.title, options: createOptions, votes: createVotes, voted: [], creator: createdBy });
+  var createdBy = 'placeholder';
+
+  var createPoll = new Poll({ 
+    title: createTitle,
+    options: [],
+    voted: [],
+    creator: createdBy 
+  });
   
-  // Create poll
-  Poll.create(createPoll).then(function(poll){
+  // Save poll
+  Poll.create(createPoll).then(function(){
+    Poll.findOne({title: createTitle}).then(function(poll){
+      // Add options to poll
+      var i = 0;
+      for (i = 0; i < createOptions.length; i++) {
+        var currentOption = createOptions[i];
+        poll.options.push({name: currentOption, votes: 0});
+      }
+      poll.save();
+    })
     res.redirect('/');
-  }).catch(next);
+  });
   
 });
 
 // Update a poll
 router.put("/polls/:id", urlEncodedParser, function(req,res,next){
   
+  var poll_id = req.params[0];
 
   Poll.findByIdAndUpdate({_id: req.params.id}, req.body).then(function() {
     Poll.findOne({_id: req.params.id}).then(function(poll){
       res.send(poll);
     })
-    
   })
-  
 })
 
 // Delete a poll
